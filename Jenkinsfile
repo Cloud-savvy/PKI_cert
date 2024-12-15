@@ -2,7 +2,7 @@ pipeline {
     agent any
 
     environment {
-        VAULT_ADDR = "http://34.230.183.157/:8200"
+        VAULT_ADDR = "http://34.230.183.157:8200"
         VAULT_TOKEN = credentials('vault-token') // Add Vault token in Jenkins credentials
         ROLE_NAME = "balaji-role"
         COMMON_NAME = "test.balajipki.com"
