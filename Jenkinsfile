@@ -43,6 +43,7 @@ pipeline {
             steps {
                 echo "Updating certificate in Kubernetes..."
                 sh """
+                export KUBECONFIG=/var/lib/jenkins/workspace/New_PKI_shell/kubeconfig
                     kubectl create secret tls ${K8S_SECRET_NAME} \
                     --cert=cert.crt \
                     --key=cert.key \
