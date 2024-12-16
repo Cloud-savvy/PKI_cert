@@ -55,7 +55,10 @@ pipeline {
         stage('Verify Deployment') {
             steps {
                 echo "Verifying updated certificate in Kubernetes..."
-                sh "kubectl get secret ${K8S_SECRET_NAME} -n ${NAMESPACE}"
+                sh """
+                    export KUBECONFIG=/var/lib/jenkins/workspace/New_PKI_shell/kubeconfig
+                    kubectl get secret ${K8S_SECRET_NAME} -n ${NAMESPACE}
+                    """
             }
         }
     }
