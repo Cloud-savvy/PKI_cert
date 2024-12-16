@@ -17,7 +17,7 @@ pipeline {
             steps {
                 script {
                     // Use SSH to execute a shell script remotely
-                    sshagent(['your-ssh-credentials-id']) {
+                    sshagent(['AWS-Cred']) {
                         sh """
                             ssh -o StrictHostKeyChecking=no ${REMOTE_USER}@${REMOTE_SERVER} 'bash -s' < check_and_renew_cert.sh
                         """
