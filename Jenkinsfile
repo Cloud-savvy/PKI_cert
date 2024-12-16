@@ -8,22 +8,48 @@ pipeline {
         COMMON_NAME = "test.balajipki.com"
         K8S_SECRET_NAME = "balaji-cert"
         NAMESPACE = "default"
+        REMOTE_SERVER = '34.230.183.157'  // IP or hostname of the remote server
+        REMOTE_USER = 'ubuntu'         // SSH username
     }
 
     stages {
-        stage('Check Certificate and Renew') {
+        stage('Check the Cert Status') {
             steps {
                 script {
-                    // Run the shell script
-                    sh '''
-                    #!/bin/bash
-                    chmod +x check_and_renew_cert.sh
-                    ./check_and_renew_cert.sh
-                    '''
+                    // Use SSH to execute a shell script remotely
+                    sshagent(['your-ssh-credentials-id']) {
+                        sh """
+                            ssh -o StrictHostKeyChecking=no ${REMOTE_USER}@${REMOTE_SERVER} 'bash -s' < check_and_renew_cert.sh
+                        """
+                    }
                 }
             }
         }
+        stage('Pull the Cert') {
+            steps {
+                script {
+                    // Use SSH to execute a shell script remotely
+                    sshagent(['your-ssh-credentials-id']) {
+                        sh """
+                            scp -r -o StrictHostKeyChecking=no ${REMOTE_USER}@${REMOTE_SERVER}:/home/ubuntu/cert.crt /var/lib/jenkins/waorkspace
+                            scp -r -o StrictHostKeyChecking=no ${REMOTE_USER}@${REMOTE_SERVER}:/home/ubuntu/cert.key /var/lib/jenkins/waorkspace
 
+                        """
+                    }
+                }
+            }
+        }
+        stage('Deploy the Cert to K8s') {
+            steps {
+                echo "Updating certificate in Kubernetes..."
+                sh """
+                    kubectl create secret tls ${K8S_SECRET_NAME} \
+                    --cert=cert.crt \
+                    --key=cert.key \
+                    --namespace=${NAMESPACE} --dry-run=client -o yaml | kubectl apply -f -
+                """
+            }
+        }
         stage('Verify Deployment') {
             steps {
                 echo "Verifying updated certificate in Kubernetes..."
@@ -38,6 +64,6 @@ pipeline {
         }
         failure {
             echo "Failed to renew or update the certificate."
-        }
-    }
+        }
+    }
 }
