@@ -33,12 +33,4 @@ vault write -format=json pki/issue/$ROLE_NAME \
 # Extract certificate and key
 jq -r '.data.certificate' cert.json > cert.crt
 jq -r '.data.private_key' cert.json > cert.key
-jq -r '.data.issuing_ca' cert.json > ca.crt
-
-# Update Kubernetes TLS Secret
-kubectl create secret tls $K8S_SECRET_NAME \
-    --cert=cert.crt \
-    --key=cert.key \
-    --namespace=$NAMESPACE --dry-run=client -o yaml | kubectl apply -f -
-
-echo "Certificate renewed and updated in Kubernetes."
+jq -r '.data.issuing_ca' cert.json > ca.crt
