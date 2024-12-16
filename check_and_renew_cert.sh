@@ -1,6 +1,6 @@
 #!/bin/bash
 # Variables
-VAULT_ADDR="http://34.230.183.157/:8200"
+VAULT_ADDR="http://34.230.183.157:8200"
 VAULT_TOKEN="hvs.ReUebAxP1CY3HT0VWCdSa3jZ"
 ROLE_NAME="balaji-role"
 COMMON_NAME="test.balajipki.com"
