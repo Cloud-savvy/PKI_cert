@@ -33,7 +33,6 @@ pipeline {
                         sh """
                             scp -r -o StrictHostKeyChecking=no ${REMOTE_USER}@${REMOTE_SERVER}:/home/ubuntu/cert.crt /var/lib/jenkins/workspace/Pipeline_PKI
                             scp -r -o StrictHostKeyChecking=no ${REMOTE_USER}@${REMOTE_SERVER}:/home/ubuntu/cert.key /var/lib/jenkins/workspace/Pipeline_PKI
-
                         """
                     }
                 }
@@ -42,13 +41,15 @@ pipeline {
         stage('Deploy the Cert to K8s') {
             steps {
                 echo "Updating certificate in Kubernetes..."
-                sh """
-                export KUBECONFIG=/var/lib/jenkins/workspace/New_PKI_shell/kubeconfig
+                script {
+                    sh """
+                    export KUBECONFIG=/var/lib/jenkins/workspace/New_PKI_shell/kubeconfig
                     kubectl create secret tls ${K8S_SECRET_NAME} \
                     --cert=cert.crt \
                     --key=cert.key \
                     --namespace=${NAMESPACE} --dry-run=client -o yaml | kubectl apply -f -
-                """
+                    """
+                }
             }
         }
         stage('Verify Deployment') {
