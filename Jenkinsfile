@@ -31,8 +31,8 @@ pipeline {
                     // Use SSH to execute a shell script remotely
                     sshagent(['AWS-Cred']) {
                         sh """
-                            scp -r -o StrictHostKeyChecking=no ${REMOTE_USER}@${REMOTE_SERVER}:/home/ubuntu/cert.crt /var/lib/jenkins/waorkspace
-                            scp -r -o StrictHostKeyChecking=no ${REMOTE_USER}@${REMOTE_SERVER}:/home/ubuntu/cert.key /var/lib/jenkins/waorkspace
+                            scp -r -o StrictHostKeyChecking=no ${REMOTE_USER}@${REMOTE_SERVER}:/home/ubuntu/cert.crt /var/lib/jenkins/workspace/Pipeline_PKI
+                            scp -r -o StrictHostKeyChecking=no ${REMOTE_USER}@${REMOTE_SERVER}:/home/ubuntu/cert.key /var/lib/jenkins/workspace/Pipeline_PKI
 
                         """
                     }
