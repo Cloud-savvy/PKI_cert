@@ -8,6 +8,7 @@ ROLE_NAME="balaji-role"
 COMMON_NAME="test.balajipki.com"
 K8S_SECRET_NAME="balaji-cert"
 NAMESPACE="default"
+RENEW_THRESHOLD_DAYS=15
 
 # Export Vault token (Ensure the token is securely stored)
 export VAULT_ADDR VAULT_TOKEN
@@ -20,18 +21,19 @@ if [ -f cert.crt ]; then
     # Convert expiry date and current date to a comparable format
     EXPIRY_TIMESTAMP=$(date -d "$EXPIRY_DATE" +%s)
     CURRENT_TIMESTAMP=$(date -u +%s)
+    RENEW_THRESHOLD_TIMESTAMP=$(date -d "+$RENEW_THRESHOLD_DAYS days" +%s)
 
     echo "Certificate Expiry: $EXPIRY_DATE"
     echo "Current Date: $(date -u +'%b %d %H:%M:%S %Y GMT')"
 
     # Compare expiry date and current date
-    if [ "$EXPIRY_TIMESTAMP" -gt "$CURRENT_TIMESTAMP" ]; then
-        echo "Certificate is still valid."
+    if [ "$EXPIRY_TIMESTAMP" -gt "$RENEW_THRESHOLD_TIMESTAMP" ]; then
+        echo "Certificate is still valid and has more than $RENEW_THRESHOLD_DAYS days remaining."
         exit 0
     fi
 fi
 
-echo "Certificate is expired or not found. Renewing..."
+echo "Certificate is expired or has less than $RENEW_THRESHOLD_DAYS days remaining. Renewing..."
 
 # Renew the certificate using Vault PKI endpoint
 vault write -format=json pki/issue/$ROLE_NAME \
