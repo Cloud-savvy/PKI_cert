@@ -43,7 +43,7 @@ pipeline {
                 echo "Updating certificate in Kubernetes..."
                 script {
                     sh """
-                    export KUBECONFIG=/var/lib/jenkins/workspace/New_PKI_shell/kubeconfig
+                    export KUBECONFIG=/var/lib/jenkins/workspace/Pipeline_PKI/kubeconfig
                     kubectl create secret tls ${K8S_SECRET_NAME} \
                     --cert=cert.crt \
                     --key=cert.key \
@@ -56,7 +56,7 @@ pipeline {
             steps {
                 echo "Verifying updated certificate in Kubernetes..."
                 sh """
-                    export KUBECONFIG=/var/lib/jenkins/workspace/New_PKI_shell/kubeconfig
+                    export KUBECONFIG=/var/lib/jenkins/workspace/Pipeline_PKI/kubeconfig
                     kubectl get secret ${K8S_SECRET_NAME} -n ${NAMESPACE}
                     """
             }
