@@ -2,13 +2,13 @@ pipeline {
     agent any
 
     environment {
-        VAULT_ADDR = "http://34.230.183.157:8200"
+        VAULT_ADDR = "http://54.196.34.58:8200"
         VAULT_TOKEN = credentials('vault-token') // Add Vault token in Jenkins credentials
         ROLE_NAME = "balaji-role"
-        COMMON_NAME = "test.balajipki.com"
-        K8S_SECRET_NAME = "balaji-cert"
-        NAMESPACE = "default"
-        REMOTE_SERVER = '34.230.183.157'  // IP or hostname of the remote server
+        COMMON_NAME = "www.balajipki.com"
+        K8S_SECRET_NAME = "balajipki-certs"
+        NAMESPACE = "istio-system"
+        REMOTE_SERVER = '54.196.34.58'  // IP or hostname of the remote server
         REMOTE_USER = 'ubuntu'         // SSH username
     }
 
@@ -17,7 +17,7 @@ pipeline {
             steps {
                 script {
                     // Use SSH to execute a shell script remotely
-                    sshagent(['AWS-Cred']) {
+                    sshagent(['Vault-key']) {
                         sh """
                             ssh -o StrictHostKeyChecking=no ${REMOTE_USER}@${REMOTE_SERVER} 'bash -s' < check_and_renew_cert.sh
                         """
@@ -29,7 +29,7 @@ pipeline {
             steps {
                 script {
                     // Use SSH to execute a shell script remotely
-                    sshagent(['AWS-Cred']) {
+                    sshagent(['Vault-key']) {
                         sh """
                             scp -r -o StrictHostKeyChecking=no ${REMOTE_USER}@${REMOTE_SERVER}:/home/ubuntu/cert.crt /var/lib/jenkins/workspace/Pipeline_PKI
                             scp -r -o StrictHostKeyChecking=no ${REMOTE_USER}@${REMOTE_SERVER}:/home/ubuntu/cert.key /var/lib/jenkins/workspace/Pipeline_PKI
