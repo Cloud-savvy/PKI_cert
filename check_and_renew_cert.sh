@@ -1,13 +1,12 @@
+
 #!/bin/bash
 
 # Variables
 
-VAULT_ADDR="http://34.230.183.157:8200"
-VAULT_TOKEN="hvs.ReUebAxP1CY3HT0VWCdSa3jZ"
+VAULT_ADDR="http://54.196.34.58:8200"
+VAULT_TOKEN="hvs.sUX9oajXDdZ8S5Q9kodvNFc3"
 ROLE_NAME="balaji-role"
-COMMON_NAME="test.balajipki.com"
-K8S_SECRET_NAME="balaji-cert"
-NAMESPACE="default"
+COMMON_NAME="www.balajipki.com"
 RENEW_THRESHOLD_DAYS=15
 
 # Export Vault token (Ensure the token is securely stored)
