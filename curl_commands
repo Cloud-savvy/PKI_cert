@@ -1,0 +1,14 @@
+curl --header "X-Vault-Token: $VAULT_TOKEN" \
+     --request POST \
+     --data '{"common_name":"www.balajipki.com","alt_names":"www.balajipki.com","ttl":"24h"}' \
+     http://54.196.34.58:8200/v1/pki/issue/balaji-role | jq -r '.data.certificate' > cert.crt
+
+curl --header "X-Vault-Token: $VAULT_TOKEN" \
+     --request POST \
+     --data '{"common_name":"www.balajipki.com","alt_names":"www.balajipki.com","ttl":"24h"}' \
+     http://54.196.34.58:8200/v1/pki/issue/balaji-role | jq -r '.data.private_key' > cert.key
+
+curl --header "X-Vault-Token: $VAULT_TOKEN" \
+     --request POST \
+     --data '{"common_name":"www.balajipki.com","alt_names":"www.balajipki.com","ttl":"24h"}' \
+     http://54.196.34.58:8200/v1/pki/issue/balaji-role | jq -r '.data.issuing_ca' > ca.crt
